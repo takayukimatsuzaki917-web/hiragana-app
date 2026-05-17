@@ -184,12 +184,32 @@ render_sidebar()
 # =====================================================================
 
 # ---- ページ先頭へスクロール（つぎのもじ押下後に一度だけ実行） ----
-# components.html は独自iframeでJSを実行するため、iPhone Safariでも確実に動く
 if st.session_state.scroll_to_top:
-    components.html(
-        "<script>window.parent.scrollTo({top: 0, behavior: 'instant'});</script>",
-        height=0,
-    )
+    components.html("""
+    <script>
+        // window・document・Streamlit固有の要素すべてにscrollTop=0を試みる
+        // iPhone Chrome/Safariでは対象要素がブラウザごとに異なるため複数対応
+        (function() {
+            var p = window.parent;
+            try {
+                p.scrollTo(0, 0);
+                p.document.documentElement.scrollTop = 0;
+                p.document.body.scrollTop = 0;
+                var selectors = [
+                    'section.main',
+                    '.main',
+                    '[data-testid="stAppViewContainer"]',
+                    '[data-testid="stMain"]',
+                    '.stApp'
+                ];
+                selectors.forEach(function(sel) {
+                    var el = p.document.querySelector(sel);
+                    if (el) { el.scrollTop = 0; }
+                });
+            } catch(e) {}
+        })();
+    </script>
+    """, height=0)
     st.session_state.scroll_to_top = False
 
 # ---- 進捗表示 ----
