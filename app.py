@@ -65,6 +65,10 @@ def _init_session_state() -> None:
     if "just_retry" not in st.session_state:
         st.session_state.just_retry = False
 
+    # 次の文字へ移った直後かどうか（ページ先頭へスクロールするためのフラグ）
+    if "scroll_to_top" not in st.session_state:
+        st.session_state.scroll_to_top = False
+
 
 def _build_queue(chars: list[str], mode: str) -> list[str]:
     """
@@ -178,6 +182,14 @@ render_sidebar()
 # メイン画面
 # =====================================================================
 
+# ---- ページ先頭へスクロール（つぎのもじ押下後に一度だけ実行） ----
+if st.session_state.scroll_to_top:
+    st.markdown(
+        "<script>window.parent.scrollTo({top: 0, behavior: 'smooth'});</script>",
+        unsafe_allow_html=True,
+    )
+    st.session_state.scroll_to_top = False
+
 # ---- 進捗表示 ----
 progress_html = (
     f'<div class="progress-display">'
@@ -275,6 +287,7 @@ with btn_area:
         st.session_state.current_char = _pop_next_char()
         st.session_state.just_correct = False
         st.session_state.just_retry = False
+        st.session_state.scroll_to_top = True
         st.rerun()
 
 # =====================================================================
