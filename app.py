@@ -5,6 +5,7 @@ streamlit run app.py で起動する。
 
 import random
 import streamlit as st
+import streamlit.components.v1 as components
 
 from data.hiragana_data import HIRAGANA_DATA, HIRAGANA_GROUPS, HIRAGANA_DICT
 from utils.audio import (
@@ -183,10 +184,11 @@ render_sidebar()
 # =====================================================================
 
 # ---- ページ先頭へスクロール（つぎのもじ押下後に一度だけ実行） ----
+# components.html は独自iframeでJSを実行するため、iPhone Safariでも確実に動く
 if st.session_state.scroll_to_top:
-    st.markdown(
-        "<script>window.parent.scrollTo({top: 0, behavior: 'smooth'});</script>",
-        unsafe_allow_html=True,
+    components.html(
+        "<script>window.parent.scrollTo({top: 0, behavior: 'instant'});</script>",
+        height=0,
     )
     st.session_state.scroll_to_top = False
 
