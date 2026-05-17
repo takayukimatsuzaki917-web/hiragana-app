@@ -1,0 +1,21 @@
+# 環境変数（APIキーを含むため必ず除外）
+.env
+
+# Python仮想環境
+.venv/
+venv/
+env/
+
+# Pythonキャッシュ
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Streamlitキャッシュ
+.streamlit/
+
+# OS
+.DS_Store
+Thumbs.db
